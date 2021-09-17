@@ -1,57 +1,75 @@
 import React, { useEffect, useState } from "react";
-import { FontAwesome5 } from "@expo/vector-icons";
 import {
   View,
   Text,
-  StyleSheet,
-  TextInput,
-  FlatList,
-  Keyboard,
-  ScrollView,
-  ActivityIndicator,
   StatusBar,
+  FlatList,
+  StyleSheet,
+  Image,
+  ActivityIndicator,
 } from "react-native";
-import SearchComponent from "./Components/SearchComponent";
+import { ScrollView } from "react-native-gesture-handler";
 
-const COMICS = ({ navigation, route }) => {
+
+const CHARACTERS = ({ navigation, route }) => {
   const [posts, setpost] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentOffset, setOffset] = useState(0);
 
-
-  function getPosts(t) {
+  function getPosts(currentOffset) {
     fetch(
-      `http://gateway.marvel.com/v1/public/comics?ts=1&apikey=d4b1296148adc17e86c2d2acec324ac3&hash=c867cb4ebd84ccbde559d844ef2f5b2d`
+      `http://gateway.marvel.com/v1/public/comics?&limit=20&offset=${currentOffset}&ts=1&apikey=e6d7a8caec633eb27579df5ba8a19a60&hash=ced257dc0da28bc88cbc9e58d441057b`
     )
       .then((application) => application.json())
       .then((applicationjson) => {
-        setpost(applicationjson.data.results);
+        setpost([...posts, ...applicationjson.data.results]);
       });
   }
 
   const renderPosts = ({ item }) => {
     return (
-      <View style={{ flex: 1, padding: 5, borderRadius: 8 }}>
+      <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
         <View style={styles.itemWrapperStyle}>
-          <Text style={styles.itemTitleStyle}>{item.title}</Text>
-          <Text style={styles.itemBodyStyle}>{item.description}</Text>
+          <Image
+            style={styles.itemImage}
+            source={{
+              uri: `${item.thumbnail.path}.${item.thumbnail.extension}`,
+            }}
+          />
+          <View style={{ flex: 1, flexDirection: "column", marginLeft: "5%" }}>
+            <Text style={styles.itemTitleStyle}>{item.title}</Text>
+          </View>
         </View>
       </View>
     );
   };
 
+  const renderLoader = () => {
+    return (
+      <View style={styles.loader}>
+        <ActivityIndicator size="large" color="#aaa" />
+      </View>
+    );
+  };
+  const loadMoreItem = () => {
+    setCurrentPage(currentPage + 1);
+    setOffset(currentOffset + 20);
+  };
+
   useEffect(() => {
-    getPosts();
-  }, []);
+    getPosts(currentOffset);
+  }, [currentPage]);
 
   return (
-    <ScrollView style={styles.mainbackground}>
-
-          <FlatList
-            data={posts}
-            renderItem={renderPosts}
-            keyExtractor={(post) => post.id}
-          />
- 
-    </ScrollView>
+    <View style={styles.mainbackground}>
+      <FlatList
+        data={posts}
+        renderItem={renderPosts}
+        keyExtractor={(post) => post.id.toString()}
+        ListFooterComponent={renderLoader}
+        onEndReached={loadMoreItem}
+      />
+    </View>
   );
 };
 
@@ -61,9 +79,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   itemWrapperStyle: {
-    borderWidth:2,
+    flexDirection: "row",
+    borderWidth: 1.5,
     borderRadius: 8,
-    paddingVertical: 8,
+    paddingVertical: 16,
     borderColor: "black",
     paddingHorizontal: 16,
   },
@@ -76,11 +95,21 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#555",
     marginTop: 4,
+    justifyContent: "flex-start",
   },
   errStyle: {
     paddingVertical: 8,
     paddingHorizontal: 16,
     color: "red",
   },
+  itemImage: {
+    width: 135,
+    height: 150,
+  },
+  loader: {
+    marginVertical: 16,
+    alignItems: "center",
+  },
 });
-export default COMICS;
+
+export default CHARACTERS;
