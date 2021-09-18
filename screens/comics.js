@@ -20,6 +20,7 @@ const COMICS = ({ navigation, route }) => {
   const [nextWeekDate, setNextWeekDate] = useState(" ");
   const [nextMonthDate, setNextMonthDate] = useState(" ");
   const [selectedValue, setSelectedValue] = useState("All Comics");
+  const [dateRange, setDateRange] = useState('');
 
   useEffect(() => {
     var date = new Date().getDate();
@@ -33,18 +34,21 @@ const COMICS = ({ navigation, route }) => {
   }, []);
 
   useEffect(() => {
-    fetchData(selectedValue, currentOffset)
+    fetchData(selectedValue, dateRange,currentOffset)
       .then((application) => application.json())
       .then((applicationjson) => {
+        console.log(applicationjson)
         setpost([...posts, ...applicationjson.data.results]);
       });
-    return () => {};
+    return () => {
+      
+    };
   }, [currentOffset]);
 
   useEffect(() => {
     setOffset(0);
 
-    fetchData(selectedValue, 0)
+    fetchData(selectedValue, dateRange,0)
       .then((application) => application.json())
       .then((applicationjson) => {
         setpost(applicationjson.data.results);
@@ -54,14 +58,17 @@ const COMICS = ({ navigation, route }) => {
     };
   }, [selectedValue]);
 
-  const fetchData = (query, offset = 0) => {
-    if (selectedValue === "All Comics") return getPosts(offset);
-    return getFilter(query, offset);
+  const fetchData = (query, dateRange ,offset = 0) => {
+    if (query === "All Comics") 
+    {
+      return getPosts(offset);
+    }
+    return getFilter(dateRange, offset);
   };
 
   function getPosts(currentOffset) {
     return fetch(
-      `http://gateway.marvel.com/v1/public/comics?&limit=20&offset=${currentOffset}&ts=1&apikey=e6d7a8caec633eb27579df5ba8a19a60&hash=ced257dc0da28bc88cbc9e58d441057b`
+      `http://gateway.marvel.com/v1/public/comics?&limit=20&offset=${currentOffset}&orderBy=title&ts=1&apikey=e6d7a8caec633eb27579df5ba8a19a60&hash=ced257dc0da28bc88cbc9e58d441057b`
     );
   }
   const getFilter = (date, currentOffset) => {
@@ -90,15 +97,24 @@ const COMICS = ({ navigation, route }) => {
 
   const onComicsChange = (itemValue) => {
     setSelectedValue(itemValue);
-    if (itemValue === "All Comics") getPosts(currentOffset);
+    if (itemValue === "All Comics") 
+      getPosts(currentOffset);
     if (itemValue === "Released Previous Week")
-      getFilter("%20" + prevWeekDate + "%2c" + currentDate, currentOffset);
-    if (itemValue === "Released Previous Month")
-      getFilter("%20" + prevMonthDate + "%2c" + currentDate, currentOffset);
+    {  setDateRange(prevWeekDate + "%2C" + currentDate),
+      getFilter( dateRange, currentOffset);
+   }
+   if (itemValue === "Released Previous Month")
+
+     { setDateRange(prevMonthDate + "%2C" + currentDate),
+       getFilter( dateRange, currentOffset);}
     if (itemValue === "To be release Next Month")
-      getFilter("%20" + currentDate + "%2c" + nextMonthDate, currentOffset);
+    { setDateRange(currentDate + "%2C" + nextMonthDate)
+      getFilter( dateRange, currentOffset);
+    }
     if (itemValue === "To be release Next Week")
-      getFilter("%20" + currentDate + "%2c" + nextWeekDate, currentOffset);
+    {  setDateRange(currentDate + "%2C" + nextWeekDate)
+      getFilter( dateRange, currentOffset);
+    }
   };
   const renderLoader = () => {
     return (
@@ -136,7 +152,7 @@ const COMICS = ({ navigation, route }) => {
             <Picker
               selectedValue={selectedValue}
               style={{ height: 30, borderRadius: 5, width: "75%" }}
-              onValueChange={(itemValue, itemIndex) =>
+              onValueChange={(itemValue) =>
                 onComicsChange(itemValue)
               }
             >
@@ -164,7 +180,7 @@ const COMICS = ({ navigation, route }) => {
       <FlatList
         data={posts}
         renderItem={renderPosts}
-        // keyExtractor={(post) => post.name.toString()}
+        keyExtractor={(posts) => posts.name}
         ListFooterComponent={renderLoader}
         onEndReached={loadMoreItem}
       />
