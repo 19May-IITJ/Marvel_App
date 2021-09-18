@@ -3,12 +3,10 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  StatusBar,
   FlatList,
   StyleSheet,
   Image,
   ActivityIndicator,
-  TextInput,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import SearchComponent from "./Components/SearchComponents";

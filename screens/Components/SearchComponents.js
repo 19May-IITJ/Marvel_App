@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   View,
-  Text,
-  StatusBar,
-  FlatList,
   StyleSheet,
-  Image,
-  ActivityIndicator,
   TextInput,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -24,9 +19,6 @@ const SearchComponent = ({ query, setQuery, }) => {
           onChange={(e) => {
             setQuery(e.target.value);
           }}
-          // onEndEditing={() => {
-          //   onSearchEnter(q);
-          // }}
         ></TextInput>
         <Icon
           size={24}

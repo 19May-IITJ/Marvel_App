@@ -2,14 +2,13 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  StatusBar,
   FlatList,
   StyleSheet,
   Image,
   ActivityIndicator,
-  Picker,
 } from "react-native";
-import { FontAwesome5 } from "@expo/vector-icons";
+
+import FilterComponent from  "./Components/FilterComponent";
 
 const COMICS = ({ navigation, route }) => {
   const [posts, setpost] = useState([]);
@@ -129,48 +128,9 @@ const COMICS = ({ navigation, route }) => {
 
   return (
     <View style={styles.mainbackground}>
-      <View style={{ padding: 20 }}>
-        <View style={styles.not}>
-          <FontAwesome5 name="filter" size={30} color={"black"}></FontAwesome5>
-          <Text
-            style={{
-              flex: 2,
-              textAlign: "left",
-              marginTop: "01%",
-              fontSize: 15,
-              fontWeight: "bold",
-              marginLeft: "1%",
-            }}
-          >
-            Filters
-          </Text>
-          {
-            <Picker
-              selectedValue={selectedValue}
-              style={{ height: 30, borderRadius: 5, width: "75%" }}
-              onValueChange={(itemValue) => onComicsChange(itemValue)}
-            >
-              <Picker.Item label="All Comics" value="All Comics"></Picker.Item>
-              <Picker.Item
-                label="Released Previous Week"
-                value="Released Previous Week"
-              ></Picker.Item>
-              <Picker.Item
-                label="Released Previous Month"
-                value="Released in Previous Month"
-              ></Picker.Item>
-              <Picker.Item
-                label="To be release Next Week"
-                value="To be release Next Week"
-              ></Picker.Item>
-              <Picker.Item
-                label="To be release Next Month"
-                value="To be release Next Month"
-              ></Picker.Item>
-            </Picker>
-          }
-        </View>
-      </View>
+      <FilterComponent
+        setSelectedValue = {setSelectedValue} selectedValue = {selectedValue}
+      />
       <FlatList
         data={posts}
         renderItem={renderPosts}
