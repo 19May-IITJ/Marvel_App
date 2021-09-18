@@ -14,13 +14,13 @@ import { FontAwesome5 } from "@expo/vector-icons";
 const COMICS = ({ navigation, route }) => {
   const [posts, setpost] = useState([]);
   const [currentOffset, setOffset] = useState(0);
-  const [currentDate, setcurrentDate] = useState(" ");
-  const [prevWeekDate, setPrevWeekDate] = useState(" ");
-  const [prevMonthDate, setPrevMonthDate] = useState(" ");
-  const [nextWeekDate, setNextWeekDate] = useState(" ");
-  const [nextMonthDate, setNextMonthDate] = useState(" ");
+  const [currentDate, setcurrentDate] = useState("");
+  const [prevWeekDate, setPrevWeekDate] = useState("");
+  const [prevMonthDate, setPrevMonthDate] = useState("");
+  const [nextWeekDate, setNextWeekDate] = useState("");
+  const [nextMonthDate, setNextMonthDate] = useState("");
   const [selectedValue, setSelectedValue] = useState("All Comics");
-  const [dateRange, setDateRange] = useState('');
+  const [dateRange, setDateRange] = useState("");
 
   useEffect(() => {
     var date = new Date().getDate();
@@ -34,35 +34,49 @@ const COMICS = ({ navigation, route }) => {
   }, []);
 
   useEffect(() => {
-    fetchData(selectedValue, dateRange,currentOffset)
+    fetchData(selectedValue, dateRange, currentOffset)
       .then((application) => application.json())
       .then((applicationjson) => {
-        console.log(applicationjson)
-        setpost([...posts, ...applicationjson.data.results]);
+        if (currentOffset === 0) setpost(applicationjson.data.results);
+        else setpost([...posts, ...applicationjson.data.results]);
       });
-    return () => {
-      
-    };
-  }, [currentOffset]);
+    return () => {};
+  }, [currentOffset, dateRange]);
 
   useEffect(() => {
     setOffset(0);
-
-    fetchData(selectedValue, dateRange,0)
-      .then((application) => application.json())
-      .then((applicationjson) => {
-        setpost(applicationjson.data.results);
-      });
+    let newDateRange;
+    if (selectedValue === "Released Previous Week") {
+      newDateRange = prevWeekDate + "%2C" + currentDate;
+    }
+    if (selectedValue === "Released Previous Month") {
+      newDateRange = prevMonthDate + "%2C" + currentDate;
+    }
+    if (selectedValue === "To be release Next Month") {
+      newDateRange = currentDate + "%2C" + nextMonthDate;
+    }
+    if (selectedValue === "To be release Next Week") {
+      newDateRange = currentDate + "%2C" + nextWeekDate;
+    }
+    setDateRange(newDateRange);
+    // if (!newDateRange) {
+    //   return;
+    // }
+    // fetchData(selectedValue, newDateRange, 0)
+    //   .then((application) => application.json())
+    //   .then((applicationjson) => {
+    //     setpost(applicationjson.data.results);
+    //   });
     return () => {
       setpost([]);
     };
   }, [selectedValue]);
 
-  const fetchData = (query, dateRange ,offset = 0) => {
-    if (query === "All Comics") 
-    {
+  const fetchData = (query, dateRange, offset = 0) => {
+    if (query === "All Comics" || !dateRange) {
       return getPosts(offset);
     }
+
     return getFilter(dateRange, offset);
   };
 
@@ -73,7 +87,7 @@ const COMICS = ({ navigation, route }) => {
   }
   const getFilter = (date, currentOffset) => {
     return fetch(
-      `http://gateway.marvel.com/v1/public/comics?&dateRange=${date}&limit=20&offset=${currentOffset}&ts=1&apikey=e6d7a8caec633eb27579df5ba8a19a60&hash=ced257dc0da28bc88cbc9e58d441057b`
+      `http://gateway.marvel.com/v1/public/comics?&dateRange=${date}&limit=20&offset=${currentOffset}&orderBy=title&ts=1&apikey=e6d7a8caec633eb27579df5ba8a19a60&hash=ced257dc0da28bc88cbc9e58d441057b`
     );
   };
 
@@ -97,24 +111,6 @@ const COMICS = ({ navigation, route }) => {
 
   const onComicsChange = (itemValue) => {
     setSelectedValue(itemValue);
-    if (itemValue === "All Comics") 
-      getPosts(currentOffset);
-    if (itemValue === "Released Previous Week")
-    {  setDateRange(prevWeekDate + "%2C" + currentDate),
-      getFilter( dateRange, currentOffset);
-   }
-   if (itemValue === "Released Previous Month")
-
-     { setDateRange(prevMonthDate + "%2C" + currentDate),
-       getFilter( dateRange, currentOffset);}
-    if (itemValue === "To be release Next Month")
-    { setDateRange(currentDate + "%2C" + nextMonthDate)
-      getFilter( dateRange, currentOffset);
-    }
-    if (itemValue === "To be release Next Week")
-    {  setDateRange(currentDate + "%2C" + nextWeekDate)
-      getFilter( dateRange, currentOffset);
-    }
   };
   const renderLoader = () => {
     return (
@@ -152,9 +148,7 @@ const COMICS = ({ navigation, route }) => {
             <Picker
               selectedValue={selectedValue}
               style={{ height: 30, borderRadius: 5, width: "75%" }}
-              onValueChange={(itemValue) =>
-                onComicsChange(itemValue)
-              }
+              onValueChange={(itemValue) => onComicsChange(itemValue)}
             >
               <Picker.Item label="All Comics" value="All Comics"></Picker.Item>
               <Picker.Item

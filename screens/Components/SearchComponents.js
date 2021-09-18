@@ -11,23 +11,22 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
-const SearchComponent = ({ onSearchEnter}) => {
-    const [q, setQ] = useState("");
+const SearchComponent = ({ query, setQuery, }) => {
 
-    return(
-        <View style= {{padding: 20}}>
-        <View  style={styles.itemWrapperStyle}>
+  return (
+    <View style={{ padding: 20 }}>
+      <View style={styles.itemWrapperStyle}>
         <Icon size={24} name="search" color="black" style={styles.iconStyle} />
         <TextInput
-          style = {styles.searchInputStyle}
+          style={styles.searchInputStyle}
           placeholder="Search your character"
-          value={q}
+          value={query}
           onChange={(e) => {
-            setQ(e.target.value);
+            setQuery(e.target.value);
           }}
-          onEndEditing={() => {
-            onSearchEnter(q);
-          }}
+          // onEndEditing={() => {
+          //   onSearchEnter(q);
+          // }}
         ></TextInput>
         <Icon
           size={24}
@@ -35,60 +34,59 @@ const SearchComponent = ({ onSearchEnter}) => {
           color="black"
           style={styles.iconStyle}
           onPress={() => {
-            setQ("");
+            setQuery("");
           }}
         />
-        </View>
-        </View>
-    )
+      </View>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    mainbackground: {
-      flex: 1,
-      backgroundColor: "#800000",
-    },
-    itemWrapperStyle: {
-      flexDirection: "row",
-      backgroundColor:'white',
-      borderWidth: 1.5,
-      borderRadius: 8,
-      paddingVertical: 16,
-      borderColor: "black",
-      paddingHorizontal: 16,
-    },
-    itemTitleStyle: {
-      fontSize: 18,
-      color: "#000",
-      fontWeight: "bold",
-      backgroundColor: '#fff'
-    },
-  
-    itemImage: {
-      width: 135,
-      height: 150,
-    },
-    loader: {
-      marginVertical: 16,
-      alignItems: "center",
-    },
-    searchInputStyle: {
-      flex: 1,
-      margin: 0,
-      fontSize: 25,
-      color: "black",
-    },
-    iconStyle: {
-      marginTop: '0.5%',
-      marginHorizontal: '2%',
-    },
-    itemBodyStyle: {
-      fontSize: 14,
-      color: "#555",
-      marginTop: "3%",
-      justifyContent: "flex-start",
-    },
-  });
-  
-  export default SearchComponent;
-  
+  mainbackground: {
+    flex: 1,
+    backgroundColor: "#800000",
+  },
+  itemWrapperStyle: {
+    flexDirection: "row",
+    backgroundColor: "white",
+    borderWidth: 1.5,
+    borderRadius: 8,
+    paddingVertical: 16,
+    borderColor: "black",
+    paddingHorizontal: 16,
+  },
+  itemTitleStyle: {
+    fontSize: 18,
+    color: "#000",
+    fontWeight: "bold",
+    backgroundColor: "#fff",
+  },
+
+  itemImage: {
+    width: 135,
+    height: 150,
+  },
+  loader: {
+    marginVertical: 16,
+    alignItems: "center",
+  },
+  searchInputStyle: {
+    flex: 1,
+    margin: 0,
+    fontSize: 25,
+    color: "black",
+  },
+  iconStyle: {
+    marginTop: "0.5%",
+    marginHorizontal: "2%",
+  },
+  itemBodyStyle: {
+    fontSize: 14,
+    color: "#555",
+    marginTop: "3%",
+    justifyContent: "flex-start",
+  },
+});
+
+export default SearchComponent;

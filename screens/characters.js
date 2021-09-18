@@ -17,6 +17,7 @@ const CHARACTERS = ({ navigation, route }) => {
   const [posts, setpost] = useState([]);
   const [currentOffset, setOffset] = useState(0);
   const [q, setQ] = useState("");
+  const[queryHistory, setQueryHstory] = ([]);
 
   useEffect(() => {
     fetchData(q, currentOffset)
@@ -94,33 +95,8 @@ const CHARACTERS = ({ navigation, route }) => {
   return (
     <View style={styles.mainbackground}>
 
-      {/* <SearchComponent onSearchEnter={(newTerm) => {
-          setQ(newTerm);
-        }} /> */}
-
-
-      <View style= {{padding: 20}}>
-      <View  style={styles.itemWrapperStyle}>
-      <Icon size={24} name="search" color="black" style={styles.iconStyle} />
-      <TextInput
-        style = {styles.searchInputStyle}
-        placeholder="Search your character"
-        value={q}
-        onChange={(e) => {
-          setQ(e.target.value);
-        }}
-      ></TextInput>
-      <Icon
-        size={24}
-        name="close"
-        color="black"
-        style={styles.iconStyle}
-        onPress={() => {
-          setQ("");
-        }}
-      />
-      </View>
-      </View>
+      <SearchComponent query = {q} setQuery = {setQ} 
+         />
 
       <FlatList
         data={posts}
