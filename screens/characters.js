@@ -11,6 +11,7 @@ import {
   TextInput,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import SearchComponent from "./Components/SearchComponents";
 
 const CHARACTERS = ({ navigation, route }) => {
   const [posts, setpost] = useState([]);
@@ -21,11 +22,11 @@ const CHARACTERS = ({ navigation, route }) => {
     fetchData(q, currentOffset)
       .then((application) => application.json())
       .then((applicationjson) => {
-        console.log(applicationjson.data.results);
+       
         setpost([...posts, ...applicationjson.data.results]);
       });
     return () => {
-      //   setQ({});
+
     };
   }, [currentOffset]);
 
@@ -35,9 +36,12 @@ const CHARACTERS = ({ navigation, route }) => {
     fetchData(q, 0)
       .then((application) => application.json())
       .then((applicationjson) => {
-        console.log(applicationjson.data.results);
-        setpost(applicationjson.data.results);
-      });
+      setpost(applicationjson.data.results);
+     
+    });
+      return () => {
+        setpost([])
+      };
   }, [q]);
 
   const fetchData = (query, offset = 0) => {
@@ -51,14 +55,15 @@ const CHARACTERS = ({ navigation, route }) => {
     );
   };
   const getQuery = (q, currentOffset) => {
+  const removeExtraSpace = (s) => s.trim().split(/ +/).join('%20');
     return fetch(
-      `http://gateway.marvel.com/v1/public/characters?&nameStartsWith=${q}&limit=20&offset=${currentOffset}&ts=1&apikey=e6d7a8caec633eb27579df5ba8a19a60&hash=ced257dc0da28bc88cbc9e58d441057b`
+      `http://gateway.marvel.com/v1/public/characters?&nameStartsWith=${removeExtraSpace(q)}&limit=20&offset=${currentOffset}&ts=1&apikey=e6d7a8caec633eb27579df5ba8a19a60&hash=ced257dc0da28bc88cbc9e58d441057b`
     );
   };
 
   const renderPosts = ({ item }) => {
     return (
-      <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
+      <View style={{ paddingHorizontal: 20, paddingVertical: 10}}>
         <View style={styles.itemWrapperStyle}>
           <Image
             style={styles.itemImage}
@@ -78,7 +83,7 @@ const CHARACTERS = ({ navigation, route }) => {
   const renderLoader = () => {
     return (
       <View style={styles.loader}>
-        <ActivityIndicator size="large" color="#aaa" />
+        <ActivityIndicator size="large" color="#fff" />
       </View>
     );
   };
@@ -86,21 +91,36 @@ const CHARACTERS = ({ navigation, route }) => {
     setOffset(currentOffset + 20);
   };
 
-  function search(data) {
-    return data.filter((data) => data.name.indexOf(q) > -1);
-  }
-
   return (
     <View style={styles.mainbackground}>
-      <Icon size={18} name="search" color="white" style={styles.iconStyle} />
+
+      {/* <SearchComponent onSearchEnter={(newTerm) => {
+          setQ(newTerm);
+        }} /> */}
+
+
+      <View style= {{padding: 20}}>
+      <View  style={styles.itemWrapperStyle}>
+      <Icon size={24} name="search" color="black" style={styles.iconStyle} />
       <TextInput
-        style={styles.itemWrapperStyle}
+        style = {styles.searchInputStyle}
         placeholder="Search your character"
         value={q}
         onChange={(e) => {
           setQ(e.target.value);
         }}
       ></TextInput>
+      <Icon
+        size={24}
+        name="close"
+        color="black"
+        style={styles.iconStyle}
+        onPress={() => {
+          setQ("");
+        }}
+      />
+      </View>
+      </View>
 
       <FlatList
         data={posts}
@@ -116,10 +136,11 @@ const CHARACTERS = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   mainbackground: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#800000",
   },
   itemWrapperStyle: {
     flexDirection: "row",
+    backgroundColor:'white',
     borderWidth: 1.5,
     borderRadius: 8,
     paddingVertical: 16,
@@ -127,21 +148,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   itemTitleStyle: {
-    fontSize: 14,
+    fontSize: 18,
     color: "#000",
     fontWeight: "bold",
+    backgroundColor: '#fff'
   },
-  itemBodyStyle: {
-    fontSize: 14,
-    color: "#555",
-    marginTop: 4,
-    justifyContent: "flex-start",
-  },
-  errStyle: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    color: "red",
-  },
+
   itemImage: {
     width: 135,
     height: 150,
@@ -152,15 +164,19 @@ const styles = StyleSheet.create({
   },
   searchInputStyle: {
     flex: 1,
-    fontSize: 16,
-    paddingVertical: 8,
-    paddingHorizontal: 0,
     margin: 0,
+    fontSize: 25,
     color: "black",
   },
   iconStyle: {
-    marginTop: 12,
-    marginHorizontal: 8,
+    marginTop: '0.5%',
+    marginHorizontal: '2%',
+  },
+  itemBodyStyle: {
+    fontSize: 14,
+    color: "#555",
+    marginTop: "3%",
+    justifyContent: "flex-start",
   },
 });
 

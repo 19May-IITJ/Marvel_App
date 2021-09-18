@@ -7,24 +7,68 @@ import {
   StyleSheet,
   Image,
   ActivityIndicator,
+  Picker,
 } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { FontAwesome5 } from "@expo/vector-icons";
 
-
-const CHARACTERS = ({ navigation, route }) => {
+const COMICS = ({ navigation, route }) => {
   const [posts, setpost] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
   const [currentOffset, setOffset] = useState(0);
+  const [currentDate, setcurrentDate] = useState(" ");
+  const [prevWeekDate, setPrevWeekDate] = useState(" ");
+  const [prevMonthDate, setPrevMonthDate] = useState(" ");
+  const [nextWeekDate, setNextWeekDate] = useState(" ");
+  const [nextMonthDate, setNextMonthDate] = useState(" ");
+  const [selectedValue, setSelectedValue] = useState("All Comics");
 
-  function getPosts(currentOffset) {
-    fetch(
-      `http://gateway.marvel.com/v1/public/comics?&limit=20&offset=${currentOffset}&ts=1&apikey=e6d7a8caec633eb27579df5ba8a19a60&hash=ced257dc0da28bc88cbc9e58d441057b`
-    )
+  useEffect(() => {
+    var date = new Date().getDate();
+    var month = new Date().getMonth() + 1;
+    var year = new Date().getFullYear();
+    setcurrentDate(year + "-" + month + "-" + date);
+    setPrevWeekDate(year + "-" + month + "-" + (date - 7));
+    setPrevMonthDate(year + "-" + (month - 1) + "-" + date);
+    setNextWeekDate(year + "-" + month + "-" + (date + 7));
+    setNextMonthDate(year + "-" + (month + 1) + "-" + date);
+  }, []);
+
+  useEffect(() => {
+    fetchData(selectedValue, currentOffset)
       .then((application) => application.json())
       .then((applicationjson) => {
         setpost([...posts, ...applicationjson.data.results]);
       });
+    return () => {};
+  }, [currentOffset]);
+
+  useEffect(() => {
+    setOffset(0);
+
+    fetchData(selectedValue, 0)
+      .then((application) => application.json())
+      .then((applicationjson) => {
+        setpost(applicationjson.data.results);
+      });
+    return () => {
+      setpost([]);
+    };
+  }, [selectedValue]);
+
+  const fetchData = (query, offset = 0) => {
+    if (selectedValue === "All Comics") return getPosts(offset);
+    return getFilter(query, offset);
+  };
+
+  function getPosts(currentOffset) {
+    return fetch(
+      `http://gateway.marvel.com/v1/public/comics?&limit=20&offset=${currentOffset}&ts=1&apikey=e6d7a8caec633eb27579df5ba8a19a60&hash=ced257dc0da28bc88cbc9e58d441057b`
+    );
   }
+  const getFilter = (date, currentOffset) => {
+    return fetch(
+      `http://gateway.marvel.com/v1/public/comics?&dateRange=${date}&limit=20&offset=${currentOffset}&ts=1&apikey=e6d7a8caec633eb27579df5ba8a19a60&hash=ced257dc0da28bc88cbc9e58d441057b`
+    );
+  };
 
   const renderPosts = ({ item }) => {
     return (
@@ -44,6 +88,18 @@ const CHARACTERS = ({ navigation, route }) => {
     );
   };
 
+  const onComicsChange = (itemValue) => {
+    setSelectedValue(itemValue);
+    if (itemValue === "All Comics") getPosts(currentOffset);
+    if (itemValue === "Released Previous Week")
+      getFilter("%20" + prevWeekDate + "%2c" + currentDate, currentOffset);
+    if (itemValue === "Released Previous Month")
+      getFilter("%20" + prevMonthDate + "%2c" + currentDate, currentOffset);
+    if (itemValue === "To be release Next Month")
+      getFilter("%20" + currentDate + "%2c" + nextMonthDate, currentOffset);
+    if (itemValue === "To be release Next Week")
+      getFilter("%20" + currentDate + "%2c" + nextWeekDate, currentOffset);
+  };
   const renderLoader = () => {
     return (
       <View style={styles.loader}>
@@ -52,20 +108,63 @@ const CHARACTERS = ({ navigation, route }) => {
     );
   };
   const loadMoreItem = () => {
-    setCurrentPage(currentPage + 1);
     setOffset(currentOffset + 20);
   };
 
   useEffect(() => {
     getPosts(currentOffset);
-  }, [currentPage]);
+  }, [currentOffset]);
 
   return (
     <View style={styles.mainbackground}>
+      <View style={{ padding: 20 }}>
+        <View style={styles.not}>
+          <FontAwesome5 name="filter" size={30} color={"black"}></FontAwesome5>
+          <Text
+            style={{
+              flex: 2,
+              textAlign: "left",
+              marginTop: "01%",
+              fontSize: 15,
+              fontWeight: "bold",
+              marginLeft: "1%",
+            }}
+          >
+            Filters
+          </Text>
+          {
+            <Picker
+              selectedValue={selectedValue}
+              style={{ height: 30, borderRadius: 5, width: "75%" }}
+              onValueChange={(itemValue, itemIndex) =>
+                onComicsChange(itemValue)
+              }
+            >
+              <Picker.Item label="All Comics" value="All Comics"></Picker.Item>
+              <Picker.Item
+                label="Released Previous Week"
+                value="Released Previous Week"
+              ></Picker.Item>
+              <Picker.Item
+                label="Released Previous Month"
+                value="Released in Previous Month"
+              ></Picker.Item>
+              <Picker.Item
+                label="To be release Next Week"
+                value="To be release Next Week"
+              ></Picker.Item>
+              <Picker.Item
+                label="To be release Next Month"
+                value="To be release Next Month"
+              ></Picker.Item>
+            </Picker>
+          }
+        </View>
+      </View>
       <FlatList
         data={posts}
         renderItem={renderPosts}
-        keyExtractor={(post) => post.id.toString()}
+        // keyExtractor={(post) => post.name.toString()}
         ListFooterComponent={renderLoader}
         onEndReached={loadMoreItem}
       />
@@ -77,6 +176,27 @@ const styles = StyleSheet.create({
   mainbackground: {
     flex: 1,
     backgroundColor: "#fff",
+  },
+  not: {
+    width: "100%",
+    marginTop: 1,
+    marginBottom: 1,
+    borderWidth: 0.01,
+    shadowColor: "black",
+    flexDirection: "row",
+    backgroundColor: "white",
+    justifyContent: "space-between",
+    borderRadius: 8,
+    padding: 11,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+
+    elevation: 6,
   },
   itemWrapperStyle: {
     flexDirection: "row",
@@ -112,4 +232,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CHARACTERS;
+export default COMICS;
