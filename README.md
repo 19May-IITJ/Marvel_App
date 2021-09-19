@@ -1,4 +1,7 @@
 # Marvel_App
+Marvel exposes this detail via their APIs & allows people to build
+custom views. Details: https://developer.marvel.com/
+
 App will have a screen with bottom navigation and 2 tabs.
 ● Tab 1 -> Show a grid of characters returned by the apis, should be paginated. Add a
 search bar on top -> search a query and show characters based on the search
