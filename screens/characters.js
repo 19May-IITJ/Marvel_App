@@ -5,9 +5,9 @@ import {
   FlatList,
   StyleSheet,
   Image,
+  Animated,
   ActivityIndicator,
 } from "react-native";
-
 
 import SearchComponent from "./Components/SearchComponents";
 
@@ -15,18 +15,14 @@ const CHARACTERS = ({ navigation, route }) => {
   const [posts, setpost] = useState([]);
   const [currentOffset, setOffset] = useState(0);
   const [query, setQuery] = useState("");
- 
 
   useEffect(() => {
     fetchData(query, currentOffset)
       .then((application) => application.json())
       .then((applicationjson) => {
-       setpost([...posts, ...applicationjson.data.results]);
-
+        setpost([...posts, ...applicationjson.data.results]);
       });
-    return () => {
-
-    };
+    return () => {};
   }, [currentOffset]);
 
   useEffect(() => {
@@ -34,14 +30,11 @@ const CHARACTERS = ({ navigation, route }) => {
     fetchData(query, 0)
       .then((application) => application.json())
       .then((applicationjson) => {
-        
-      setpost(applicationjson.data.results);
-     
-    });
-      return () => {
-        setpost([])
-        
-      };
+        setpost(applicationjson.data.results);
+      });
+    return () => {
+      setpost([]);
+    };
   }, [query]);
 
   const fetchData = (query, offset = 0) => {
@@ -55,8 +48,8 @@ const CHARACTERS = ({ navigation, route }) => {
     );
   };
   const getQuery = (query, currentOffset) => {
-  //   if(query)
-  // const removeExtraSpace = (s) => s.trim().split(/ +/).join('%20');
+    //   if(query)
+    // const removeExtraSpace = (s) => s.trim().split(/ +/).join('%20');
     return fetch(
       `http://gateway.marvel.com/v1/public/characters?&nameStartsWith=${query}&limit=20&offset=${currentOffset}&ts=1&apikey=e6d7a8caec633eb27579df5ba8a19a60&hash=ced257dc0da28bc88cbc9e58d441057b`
     );
@@ -64,7 +57,7 @@ const CHARACTERS = ({ navigation, route }) => {
 
   let renderPosts = ({ item }) => {
     return (
-      <View style={{ paddingHorizontal: 20, paddingVertical: 10}}>
+      <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
         <View style={styles.itemWrapperStyle}>
           <Image
             style={styles.itemImage}
@@ -78,10 +71,8 @@ const CHARACTERS = ({ navigation, route }) => {
           </View>
         </View>
       </View>
-     
     );
   };
-  
 
   const renderLoader = () => {
     return (
@@ -96,9 +87,7 @@ const CHARACTERS = ({ navigation, route }) => {
 
   return (
     <View style={styles.mainbackground}>
-
-      <SearchComponent query = {query} setQuery = {setQuery} 
-         />
+      <SearchComponent query={query} setQuery={setQuery} />
 
       <FlatList
         data={posts}
@@ -118,7 +107,7 @@ const styles = StyleSheet.create({
   },
   itemWrapperStyle: {
     flexDirection: "row",
-    backgroundColor:'#fff',
+    backgroundColor: "#fff",
     borderWidth: 1.5,
     borderRadius: 8,
     paddingVertical: 16,
@@ -129,7 +118,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#000",
     fontWeight: "bold",
-    backgroundColor: '#fff'
+    backgroundColor: "#fff",
   },
 
   itemImage: {
@@ -147,8 +136,8 @@ const styles = StyleSheet.create({
     color: "#000",
   },
   iconStyle: {
-    marginTop: '0.5%',
-    marginHorizontal: '2%',
+    marginTop: "0.5%",
+    marginHorizontal: "2%",
   },
   itemBodyStyle: {
     fontSize: 14,

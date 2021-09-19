@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, TextInput, FlatList, Text } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  FlatList,
+  Text,
+  Animated,
+} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 const SearchComponent = ({ query, setQuery }) => {
@@ -8,19 +15,24 @@ const SearchComponent = ({ query, setQuery }) => {
 
   const renderItemHistory = ({ item }) => {
     return (
-      <View style={{}}>
+      <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
         <View style={styles.itemWrapper}>
-        <Text>{item}</Text>
+          <TouchableOpacity
+            onPress={() => {
+              setQuery(item);
+            }}
+          >
+            <Text style={{ fontSize: 21 }}>{item}</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
   };
   const updateHistory = (text) => {
-    if (history.length > 2) {
+    if (history.length > 5) {
       setHistory([...history.slice(1), text]);
     } else setHistory([...history, text]);
   };
-
 
   return (
     <View style={{ padding: 20 }}>
@@ -40,10 +52,17 @@ const SearchComponent = ({ query, setQuery }) => {
             style={styles.searchInputStyle}
             placeholder="Search your character"
             value={query}
+            onFocus={() => {
+              setFlag("1");
+            }}
             onChangeText={(text) => {
               setQuery(text);
-              updateHistory(text);
+
               setFlag("1");
+            }}
+            onBlur={() => {
+              setFlag("0");
+              updateHistory(query);
             }}
           ></TextInput>
           <Icon
@@ -57,23 +76,19 @@ const SearchComponent = ({ query, setQuery }) => {
             }}
           />
         </View>
-        {flag == "1" ? (
-          <FlatList
-            data={history}
-            renderItem={renderItemHistory}
-            keyExtractor={(posts) => posts.toString()}
-          />
-        ) : null}
       </TouchableOpacity>
+      {flag == "1" ? (
+        <FlatList
+          data={history}
+          renderItem={renderItemHistory}
+          keyExtractor={(posts) => posts.toString()}
+        />
+      ) : null}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  mainbackground: {
-    flex: 1,
-    backgroundColor: "#800000",
-  },
   itemWrapperStyle: {
     flexDirection: "row",
     backgroundColor: "white",
@@ -90,7 +105,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     borderColor: "black",
     paddingHorizontal: 16,
-    fontSize: 19
+    height: "50%",
   },
 
   searchInputStyle: {

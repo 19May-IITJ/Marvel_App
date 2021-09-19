@@ -125,7 +125,6 @@ const COMICS = ({ navigation, route }) => {
 
   return (
     <View style={styles.mainbackground}>
-
       <FilterComponent
         setSelectedValue={setSelectedValue}
         selectedValue={selectedValue}

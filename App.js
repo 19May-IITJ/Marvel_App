@@ -27,15 +27,19 @@ const Home = ({ navigation, route }) => {
       <Tab.Navigator
         screenOptions={{
           headerTitleAlign: "center",
+          tabBarActiveTintColor: "#800000",
         }}
       >
         <Tab.Screen
           name={" Marvel Characters"}
           component={characters}
           options={{
-            headerStyle: { backgroundColor: "#800000" }, headerTintColor: '#fff', headerTitleStyle: {
-				fontWeight: 'bold', fontSize: 20
-			  },
+            headerStyle: { backgroundColor: "#800000" },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+              fontSize: 20,
+            },
             tabBarIcon: ({ focused }) => (
               <View
                 style={{
@@ -44,12 +48,13 @@ const Home = ({ navigation, route }) => {
                   alignItems: "center",
                   top: 1,
                   height: "10%",
+                  color: "#800000",
                 }}
               >
                 <FontAwesome5
                   name="users"
                   size={30}
-                  color={focused ? `#00bfff` : "gray"}
+                  color={focused ? "#800000" : `#d3d3d3`}
                 ></FontAwesome5>
               </View>
             ),
@@ -68,22 +73,27 @@ const Home = ({ navigation, route }) => {
         <Tab.Screen
           name={"Marvel Comics"}
           component={comics}
-          options={{ headerStyle: { backgroundColor: "#800000" }, headerTintColor: '#fff', headerTitleStyle: {
-			fontWeight: 'bold', fontSize: 20
-		  },
+          options={{
+            headerStyle: { backgroundColor: "#800000" },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+              fontSize: 20,
+            },
             tabBarIcon: ({ focused }) => (
               <View
                 style={{
                   // centring Tab Button...
                   position: "absolute",
                   alignItems: "center",
+                  color: "#800000",
                   top: 1,
                 }}
               >
                 <FontAwesome5
                   name="book"
                   size={30}
-                  color={focused ? `#00bfff` : "gray"}
+                  color={focused ? "#800000" : `#d3d3d3`}
                 ></FontAwesome5>
               </View>
             ),
@@ -104,7 +114,7 @@ const Home = ({ navigation, route }) => {
         style={{
           width: getWidth() * 4,
           height: "0.5%",
-          backgroundColor: "#00bfff",
+          backgroundColor: "#800000",
           position: "absolute",
           bottom: "6%",
           left: getWidth() * 8.85,
