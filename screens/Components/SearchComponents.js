@@ -5,9 +5,13 @@ import {
   TextInput,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-
 const SearchComponent = ({ query, setQuery, }) => {
+ 
+  
+useEffect(()=>{
 
+})
+  
   return (
     <View style={{ padding: 20 }}>
       <View style={styles.itemWrapperStyle}>
@@ -16,8 +20,10 @@ const SearchComponent = ({ query, setQuery, }) => {
           style={styles.searchInputStyle}
           placeholder="Search your character"
           value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
+          onChangeText={(text) => {
+            console.log(text),
+            setQuery(text);
+
           }}
         ></TextInput>
         <Icon
@@ -48,25 +54,11 @@ const styles = StyleSheet.create({
     borderColor: "black",
     paddingHorizontal: 16,
   },
-  itemTitleStyle: {
-    fontSize: 18,
-    color: "#000",
-    fontWeight: "bold",
-    backgroundColor: "#fff",
-  },
 
-  itemImage: {
-    width: 135,
-    height: 150,
-  },
-  loader: {
-    marginVertical: 16,
-    alignItems: "center",
-  },
   searchInputStyle: {
     flex: 1,
     margin: 0,
-    fontSize: 25,
+    fontSize: 20,
     color: "black",
   },
   iconStyle: {

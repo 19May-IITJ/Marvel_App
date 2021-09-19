@@ -49,7 +49,7 @@ const Home = ( {navigation, route} ) => {
 	  })}
 		>
     </Tab.Screen>
-    <Tab.Screen  name = {'Comics'}  component = {comics} options={{
+    <Tab.Screen  name = {'characters'}  component = {comics} options={{
 	  tabBarIcon: ({ focused }) => (
 		<View style={{
 		  // centring Tab Button...

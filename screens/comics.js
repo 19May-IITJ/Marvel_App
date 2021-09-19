@@ -108,13 +108,10 @@ const COMICS = ({ navigation, route }) => {
     );
   };
 
-  const onComicsChange = (itemValue) => {
-    setSelectedValue(itemValue);
-  };
   const renderLoader = () => {
     return (
       <View style={styles.loader}>
-        <ActivityIndicator size="large" color="#aaa" />
+        <ActivityIndicator size="large" color="#fff" />
       </View>
     );
   };
@@ -145,7 +142,7 @@ const COMICS = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   mainbackground: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#800000",
   },
   not: {
     width: "100%",
@@ -154,7 +151,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.01,
     shadowColor: "black",
     flexDirection: "row",
-    backgroundColor: "white",
+    backgroundColor: "#fff",
     justifyContent: "space-between",
     borderRadius: 8,
     padding: 11,
@@ -175,11 +172,13 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderColor: "black",
     paddingHorizontal: 16,
+    backgroundColor: '#fff'
   },
   itemTitleStyle: {
     fontSize: 14,
     color: "#000",
     fontWeight: "bold",
+    backgroundColor: '#fff'
   },
   itemBodyStyle: {
     fontSize: 14,

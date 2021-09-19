@@ -1,4 +1,3 @@
-import { replace } from "lodash";
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -8,21 +7,21 @@ import {
   Image,
   ActivityIndicator,
 } from "react-native";
-import Icon from "react-native-vector-icons/Ionicons";
+
 import SearchComponent from "./Components/SearchComponents";
 
 const CHARACTERS = ({ navigation, route }) => {
   const [posts, setpost] = useState([]);
   const [currentOffset, setOffset] = useState(0);
-  const [q, setQ] = useState("");
-  const[queryHistory, setQueryHstory] = ([]);
+  const [query, setQuery] = useState("");
+ 
 
   useEffect(() => {
-    fetchData(q, currentOffset)
+    fetchData(query, currentOffset)
       .then((application) => application.json())
       .then((applicationjson) => {
-       
-        setpost([...posts, ...applicationjson.data.results]);
+       setpost([...posts, ...applicationjson.data.results]);
+
       });
     return () => {
 
@@ -31,17 +30,19 @@ const CHARACTERS = ({ navigation, route }) => {
 
   useEffect(() => {
     setOffset(0);
-
-    fetchData(q, 0)
+    console.log(query)
+    fetchData(query, 0)
       .then((application) => application.json())
       .then((applicationjson) => {
+        
       setpost(applicationjson.data.results);
      
     });
       return () => {
         setpost([])
+        
       };
-  }, [q]);
+  }, [query]);
 
   const fetchData = (query, offset = 0) => {
     if (query === "") return getPosts(offset);
@@ -53,14 +54,15 @@ const CHARACTERS = ({ navigation, route }) => {
       `http://gateway.marvel.com/v1/public/characters?&limit=20&offset=${currentOffset}&ts=1&apikey=e6d7a8caec633eb27579df5ba8a19a60&hash=ced257dc0da28bc88cbc9e58d441057b`
     );
   };
-  const getQuery = (q, currentOffset) => {
-  const removeExtraSpace = (s) => s.trim().split(/ +/).join('%20');
+  const getQuery = (query, currentOffset) => {
+  //   if(query)
+  // const removeExtraSpace = (s) => s.trim().split(/ +/).join('%20');
     return fetch(
-      `http://gateway.marvel.com/v1/public/characters?&nameStartsWith=${removeExtraSpace(q)}&limit=20&offset=${currentOffset}&ts=1&apikey=e6d7a8caec633eb27579df5ba8a19a60&hash=ced257dc0da28bc88cbc9e58d441057b`
+      `http://gateway.marvel.com/v1/public/characters?&nameStartsWith=${query}&limit=20&offset=${currentOffset}&ts=1&apikey=e6d7a8caec633eb27579df5ba8a19a60&hash=ced257dc0da28bc88cbc9e58d441057b`
     );
   };
 
-  const renderPosts = ({ item }) => {
+  let renderPosts = ({ item }) => {
     return (
       <View style={{ paddingHorizontal: 20, paddingVertical: 10}}>
         <View style={styles.itemWrapperStyle}>
@@ -76,8 +78,10 @@ const CHARACTERS = ({ navigation, route }) => {
           </View>
         </View>
       </View>
+     
     );
   };
+  
 
   const renderLoader = () => {
     return (
@@ -87,13 +91,14 @@ const CHARACTERS = ({ navigation, route }) => {
     );
   };
   const loadMoreItem = () => {
+    console.log(currentOffset)
     setOffset(currentOffset + 20);
   };
 
   return (
     <View style={styles.mainbackground}>
 
-      <SearchComponent query = {q} setQuery = {setQ} 
+      <SearchComponent query = {query} setQuery = {setQuery} 
          />
 
       <FlatList
@@ -114,11 +119,11 @@ const styles = StyleSheet.create({
   },
   itemWrapperStyle: {
     flexDirection: "row",
-    backgroundColor:'white',
+    backgroundColor:'#fff',
     borderWidth: 1.5,
     borderRadius: 8,
     paddingVertical: 16,
-    borderColor: "black",
+    borderColor: "#000",
     paddingHorizontal: 16,
   },
   itemTitleStyle: {
@@ -140,7 +145,7 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 0,
     fontSize: 25,
-    color: "black",
+    color: "#000",
   },
   iconStyle: {
     marginTop: '0.5%',
