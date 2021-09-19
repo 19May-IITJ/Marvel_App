@@ -29,7 +29,7 @@ const SearchComponent = ({ query, setQuery }) => {
     );
   };
   const updateHistory = (text) => {
-    if (history.length > 5) {
+    if (history.length > 3) {
       setHistory([...history.slice(1), text]);
     } else setHistory([...history, text]);
   };
@@ -62,7 +62,9 @@ const SearchComponent = ({ query, setQuery }) => {
             }}
             onBlur={() => {
               setFlag("0");
-              updateHistory(query);
+              { query?
+              updateHistory(query):null
+              }
             }}
           ></TextInput>
           <Icon
