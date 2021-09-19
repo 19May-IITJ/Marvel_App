@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 
-import FilterComponent from  "./Components/FilterComponent";
+import FilterComponent from "./Components/FilterComponent";
 
 const COMICS = ({ navigation, route }) => {
   const [posts, setpost] = useState([]);
@@ -125,8 +125,10 @@ const COMICS = ({ navigation, route }) => {
 
   return (
     <View style={styles.mainbackground}>
+
       <FilterComponent
-        setSelectedValue = {setSelectedValue} selectedValue = {selectedValue}
+        setSelectedValue={setSelectedValue}
+        selectedValue={selectedValue}
       />
       <FlatList
         data={posts}
@@ -172,13 +174,13 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderColor: "black",
     paddingHorizontal: 16,
-    backgroundColor: '#fff'
+    backgroundColor: "#fff",
   },
   itemTitleStyle: {
     fontSize: 14,
     color: "#000",
     fontWeight: "bold",
-    backgroundColor: '#fff'
+    backgroundColor: "#fff",
   },
   itemBodyStyle: {
     fontSize: 14,

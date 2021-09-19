@@ -1,41 +1,70 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  TextInput,
-} from "react-native";
+import { View, StyleSheet, TextInput, FlatList, Text } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-const SearchComponent = ({ query, setQuery, }) => {
- 
-  
-useEffect(()=>{
+import { TouchableOpacity } from "react-native-gesture-handler";
+const SearchComponent = ({ query, setQuery }) => {
+  const [history, setHistory] = useState([]);
+  const [flag, setFlag] = useState("0");
 
-})
-  
+  const renderItemHistory = ({ item }) => {
+    return (
+      <View style={{}}>
+        <View style={styles.itemWrapper}>
+        <Text>{item}</Text>
+        </View>
+      </View>
+    );
+  };
+  const updateHistory = (text) => {
+    if (history.length > 2) {
+      setHistory([...history.slice(1), text]);
+    } else setHistory([...history, text]);
+  };
+
+
   return (
     <View style={{ padding: 20 }}>
-      <View style={styles.itemWrapperStyle}>
-        <Icon size={24} name="search" color="black" style={styles.iconStyle} />
-        <TextInput
-          style={styles.searchInputStyle}
-          placeholder="Search your character"
-          value={query}
-          onChangeText={(text) => {
-            console.log(text),
-            setQuery(text);
-
-          }}
-        ></TextInput>
-        <Icon
-          size={24}
-          name="close"
-          color="black"
-          style={styles.iconStyle}
-          onPress={() => {
-            setQuery("");
-          }}
-        />
-      </View>
+      <TouchableOpacity
+        onPress={() => {
+          setFlag("1");
+        }}
+      >
+        <View style={styles.itemWrapperStyle}>
+          <Icon
+            size={24}
+            name="search"
+            color="black"
+            style={styles.iconStyle}
+          />
+          <TextInput
+            style={styles.searchInputStyle}
+            placeholder="Search your character"
+            value={query}
+            onChangeText={(text) => {
+              setQuery(text);
+              updateHistory(text);
+              setFlag("1");
+            }}
+          ></TextInput>
+          <Icon
+            size={24}
+            name="close"
+            color="black"
+            style={styles.iconStyle}
+            onPress={() => {
+              setQuery("");
+              setFlag("0");
+            }}
+          />
+        </View>
+        {flag == "1" ? (
+          <FlatList
+            data={history}
+            renderItem={renderItemHistory}
+            keyExtractor={(posts) => posts.toString()}
+          />
+        ) : null}
+      </TouchableOpacity>
     </View>
   );
 };
@@ -54,6 +83,15 @@ const styles = StyleSheet.create({
     borderColor: "black",
     paddingHorizontal: 16,
   },
+  itemWrapper: {
+    flex: 1,
+    flexDirection: "row",
+    backgroundColor: "white",
+    borderRadius: 4,
+    borderColor: "black",
+    paddingHorizontal: 16,
+    fontSize: 19
+  },
 
   searchInputStyle: {
     flex: 1,
@@ -64,12 +102,6 @@ const styles = StyleSheet.create({
   iconStyle: {
     marginTop: "0.5%",
     marginHorizontal: "2%",
-  },
-  itemBodyStyle: {
-    fontSize: 14,
-    color: "#555",
-    marginTop: "3%",
-    justifyContent: "flex-start",
   },
 });
 

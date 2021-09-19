@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 
+
 import SearchComponent from "./Components/SearchComponents";
 
 const CHARACTERS = ({ navigation, route }) => {
@@ -30,7 +31,6 @@ const CHARACTERS = ({ navigation, route }) => {
 
   useEffect(() => {
     setOffset(0);
-    console.log(query)
     fetchData(query, 0)
       .then((application) => application.json())
       .then((applicationjson) => {
@@ -91,7 +91,6 @@ const CHARACTERS = ({ navigation, route }) => {
     );
   };
   const loadMoreItem = () => {
-    console.log(currentOffset)
     setOffset(currentOffset + 20);
   };
 

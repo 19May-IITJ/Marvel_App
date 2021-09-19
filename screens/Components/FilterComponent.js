@@ -19,11 +19,10 @@ function Button ({setSelectedValue, selectedValue}) {
           <Text
             style={{
               flex: 2,
-              textAlign: "left",
-              marginTop: "01%",
-              fontSize: 15,
+              textAlign: "center",
+              marginTop: "0.5%",
+              fontSize: 19,
               fontWeight: "bold",
-              marginLeft: "1%",
             }}
           >
             Filters
@@ -31,7 +30,7 @@ function Button ({setSelectedValue, selectedValue}) {
           {
             <Picker
               selectedValue={selectedValue}
-              style={{ height: 30, borderRadius: 5, width: "75%" }}
+              style={{ height: 30, borderRadius: 5, width: "71%" }}
               onValueChange={(itemValue) => onComicsChange(itemValue)}
             >
               <Picker.Item label="All Comics" value="All Comics"></Picker.Item>
