@@ -133,15 +133,20 @@ export default function App() {
         <Stack.Navigator
           initialRouteName="Home"
           screenOptions={{
-            headerTintColor: "white",
-            headerStyle: { backgroundColor: "black" },
+            headerTintColor: "#fff",
+            headerStyle: { backgroundColor: "#800000" },
           }}
         >
           <Stack.Screen
             name="Home"
             component={Home}
             options={{
-              title: "Login",
+              headerTitleAlign: "center",
+              title: "Marvel App",
+              headerTitleStyle: {
+                fontWeight: "bold",
+                fontSize: 28,
+              },
             }}
           />
         </Stack.Navigator>
