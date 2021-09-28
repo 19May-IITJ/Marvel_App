@@ -59,12 +59,15 @@ const CHARACTERS = ({ navigation, route }) => {
     return (
       <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
         <View style={styles.itemWrapperStyle}>
+          <View  style={{flex:1, flexDirection: "column", marginLeft: "5%" }}>
           <Image
             style={styles.itemImage}
             source={{
               uri: `${item.thumbnail.path}.${item.thumbnail.extension}`,
             }}
           />
+          <Text style={styles.itemTitleStyle}>{item.name}</Text>
+          </View>
           <View style={{ flex: 1, flexDirection: "column", marginLeft: "5%" }}>
             <Text style={styles.itemTitleStyle}>{item.name}</Text>
             <Text style={(styles.itemBodyStyle, {})}>{item.description}</Text>
